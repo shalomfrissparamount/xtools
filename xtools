@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+
+import psutil
+import subprocess
+import time
+
+from rich import print
+from rich.console import Console
+from rich.prompt import Prompt
+from simple_term_menu import TerminalMenu
+
+##########################################################
+# Xcode
+##########################################################
+def fix_xcode():
+    console.print("Closing Xcode", style="blue")
+    for proc in psutil.process_iter(['pid', 'name']):
+        if 'Xcode' in proc.info['name']:
+            proc.kill()
+
+    console.print("Deleting local DerivedData", style="blue")        
+    subprocess.run(['rm', '-rf', 'DerivedData'], check=True)
+
+    console.print("Deleting shared DerivedData", style="blue")        
+    subprocess.run(['rm', '-rf', '~/Library/Developer/Xcode/DerivedData'], check=True)
+
+    console.print("Resolving package dependencies", style="blue")        
+    subprocess.run(['xcodebuild', '-resolvePackageDependencies'], check=True)
+
+    console.print("Opening Xcode", style="blue")        
+    subprocess.run(['open', '-a', '/Applications/Xcode.app'], check=True)
+
+def delete_derived_data():
+    console.print("Deleting local DerivedData", style="blue")        
+    subprocess.run(['rm', '-rf', 'DerivedData'], check=True)
+    console.print("Deleting shared DerivedData", style="blue")        
+    subprocess.run(['rm', '-rf', '~/Library/Developer/Xcode/DerivedData'], check=True)
+
+def reset_package_caches():
+    start = time.time()
+    console.print("\nResolving package dependencies", style="blue")        
+    subprocess.run(['xcodebuild', '-resolvePackageDependencies'], check=True)
+    end = time.time()
+    console.print(f"\nResolved package dependencies in {end - start} seconds", style="blue")
+
+def run_xcode_build():
+    scheme_name = Prompt.ask("Enter the scheme name to build", default="PPlusTV")
+    console.print(f"Running Xcode build for scheme: {scheme_name}", style="blue")        
+    subprocess.run(['xcodebuild', '-workspace', 'CBS.xcworkspace', '-scheme', scheme_name, 'build'], check=True)
+
+def list_devices():
+    console.print("\n")      
+    console.print("Listing all devices", style="blue")        
+    subprocess.run(['xcrun', 'xctrace', 'list', 'devices'], check=True)
+    console.print("\n")
+
+def list_all_device_info():
+    console.print("\n")      
+    console.print("Listing all available runtimes, device types, devices, and device pairs", style="blue")        
+    subprocess.run(['xcrun', 'simctl', 'list'], check=True)
+    console.print("\n")        
+
+def list_all_booted_devices():
+    console.print("\n")
+    console.print("Listing all booted devices", style="blue")
+    subprocess.run(['xcrun', 'simctl', 'list', 'devices','booted'], check=True)
+    console.print("\n")
+
+def list_schemes():
+    console.print("\n")      
+    console.print("Listing all schemes", style="blue")        
+    subprocess.run(['xcodebuild', '-list'], check=True)
+    console.print("\n")
+
+
+##########################################################
+# Proxy
+##########################################################
+
+def list_proxy_settings():
+    console.print("\n")      
+    console.print("Listing proxy settings", style="blue")        
+    subprocess.run(['networksetup', '-getwebproxy', 'wi-fi'], check=True)
+    subprocess.run(['networksetup', '-getsecurewebproxy', 'wi-fi'], check=True)
+    console.print("\n")      
+    menu()
+
+##########################################################
+# Menu
+##########################################################
+def menu():
+    menuTerms = [t[0] for t in menuOptions]
+    menuFunctions = [t[1] for t in menuOptions]
+
+    terminal_menu = TerminalMenu(menuTerms)
+    menu_entry_index = terminal_menu.show()
+    
+    if menu_entry_index is not None and menu_entry_index >= 0 and menu_entry_index < len(menuFunctions):
+        menuFunctions[menu_entry_index]()
+    else:
+        exit
+
+##########################################################
+# Properties
+##########################################################
+menuOptions = [
+    ("Fix my Xcode",            fix_xcode), 
+    ("Delete DerivedData",      delete_derived_data),
+    ("List proxy settings",     list_proxy_settings),
+    ("Reset package caches",    reset_package_caches),
+    ("List devices",            list_devices),
+    ("List all device info",   list_all_device_info),
+    ("List all booted devices", list_all_booted_devices),
+    ("List packages/targets/schemes/build configs",            list_schemes),
+    ("Run Xcode build",         run_xcode_build),
+    ("Quit",                    exit)
+]
+
+##########################################################
+# Main
+##########################################################
+if __name__ == "__main__":
+    console = Console()
+    console.print("Please pick an option:\n", style="bold blue")
+    menu()
