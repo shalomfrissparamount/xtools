@@ -72,7 +72,13 @@ def list_schemes():
     subprocess.run(['xcodebuild', '-list'], check=True)
     console.print("\n")
 
-
+def copy_bookmarks_to_desktop():
+    console.print("\n")
+    console.print("Copying your Xcode bookmarks to the desktop", style="blue")
+    output = subprocess.check_output(['whoami'], encoding='utf-8').strip()
+    subprocess.run(['cp', f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/Bookmarks/bookmarks.plist", f"/Users/{output}/Desktop"], check=True)
+    console.print("\n")
+    
 ##########################################################
 # Proxy
 ##########################################################
@@ -109,9 +115,10 @@ menuOptions = [
     ("List proxy settings",     list_proxy_settings),
     ("Reset package caches",    reset_package_caches),
     ("List devices",            list_devices),
-    ("List all device info",   list_all_device_info),
+    ("List all device info",    list_all_device_info),
     ("List all booted devices", list_all_booted_devices),
     ("List packages/targets/schemes/build configs",            list_schemes),
+    ("Copy bookmarks to desktop", copy_bookmarks_to_desktop),
     ("Run Xcode build",         run_xcode_build),
     ("Quit",                    exit)
 ]
