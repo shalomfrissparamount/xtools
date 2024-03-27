@@ -8,6 +8,8 @@ from rich import print
 from rich.console import Console
 from rich.prompt import Prompt
 from simple_term_menu import TerminalMenu
+import pathlib
+from tkinter import filedialog as fd
 
 ##########################################################
 # Xcode
@@ -78,7 +80,33 @@ def copy_bookmarks_to_desktop():
     output = subprocess.check_output(['whoami'], encoding='utf-8').strip()
     subprocess.run(['cp', f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/Bookmarks/bookmarks.plist", f"/Users/{output}/Desktop"], check=True)
     console.print("\n")
-    
+
+# def import_bookmarks_to_xcode():
+#     console.print("\n")
+#     console.print("Select your exported bookmarks plist file", style="blue")
+#     filetypes = (
+#         ('plist files', '*.plist')
+#     )
+#     theFile = fd.askopenfilename(title="Open a plist File", filetypes=(("plist", "*.plist"), ("all files", "*.*")))
+#     filePath = pathlib.Path(theFile)
+#     output = subprocess.check_output(['whoami'], encoding='utf-8').strip()
+#     subprocess.run(['cp', f"{filePath}", f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/Bookmarks/bookmarks.plist"], check=True)
+#     console.print("Imported your bookmarks to Xcode", style="blue")
+#     console.print("\n")
+#     console.print("Make sure Xcode loads bookmarks in the ide", style="blue")
+#     subprocess.run(['open', '-a', '/Applications/Xcode.app'], check=True)
+#     console.print("\n")
+   
+
+
+def copy_breakpoints_to_desktop():
+    console.print("\n")
+    console.print("Copying your Xcode bookmarks to the desktop", style="blue")
+    output = subprocess.check_output(['whoami'], encoding='utf-8').strip()
+    subprocess.run(['cp', f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist", f"/Users/{output}/Desktop"], check=True)
+    console.print("\n")
+
+
 ##########################################################
 # Proxy
 ##########################################################
@@ -119,6 +147,8 @@ menuOptions = [
     ("List all booted devices", list_all_booted_devices),
     ("List packages/targets/schemes/build configs",            list_schemes),
     ("Copy bookmarks to desktop", copy_bookmarks_to_desktop),
+    # ("Import bookmarks to Xcode", import_bookmarks_to_xcode),
+    ("Copy breakpoints to desktop", copy_breakpoints_to_desktop),
     ("Run Xcode build",         run_xcode_build),
     ("Quit",                    exit)
 ]
