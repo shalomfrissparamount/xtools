@@ -10,6 +10,7 @@ from rich.prompt import Prompt
 from simple_term_menu import TerminalMenu
 import pathlib
 from tkinter import filedialog as fd
+from datetime import datetime
 
 ##########################################################
 # Xcode
@@ -78,7 +79,7 @@ def copy_bookmarks_to_desktop():
     console.print("\n")
     console.print("Copying your Xcode bookmarks to the desktop", style="blue")
     output = subprocess.check_output(['whoami'], encoding='utf-8').strip()
-    subprocess.run(['cp', f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/Bookmarks/bookmarks.plist", f"/Users/{output}/Desktop"], check=True)
+    subprocess.run(['cp', f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/Bookmarks/bookmarks.plist", f"/Users/{output}/Desktop/bookmarks_{datetime.now().strftime('%Y_%m_%d-%I_%M_%S_%p')}.plist"], check=True)
     console.print("\n")
 
 # def import_bookmarks_to_xcode():
@@ -103,7 +104,7 @@ def copy_breakpoints_to_desktop():
     console.print("\n")
     console.print("Copying your Xcode bookmarks to the desktop", style="blue")
     output = subprocess.check_output(['whoami'], encoding='utf-8').strip()
-    subprocess.run(['cp', f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist", f"/Users/{output}/Desktop"], check=True)
+    subprocess.run(['cp', f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist", f"/Users/{output}/Desktop/breakpoints_{datetime.now().strftime('%Y_%m_%d-%I_%M_%S_%p')}.xcbkptlist"], check=True)
     console.print("\n")
 
 
