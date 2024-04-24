@@ -82,6 +82,17 @@ def copy_bookmarks_to_desktop():
     subprocess.run(['cp', f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/Bookmarks/bookmarks.plist", f"/Users/{output}/Desktop/bookmarks_{datetime.now().strftime('%Y_%m_%d-%I_%M_%S_%p')}.plist"], check=True)
     console.print("\n")
 
+def list_branches_commits_dates():
+    console.print("\n")
+    console.print("Listing all branches, commits, and last commit date", style="blue")
+    command = "git for-each-ref --sort='-authordate:iso8601' --format='%(authordate:short) %(objectname:short) %(refname:short)' refs/heads"
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    output, error = process.communicate()
+    if error:
+        print("Error:", error.decode())
+    else:
+        print(output.decode())
+    console.print("\n")
 # def import_bookmarks_to_xcode():
 #     console.print("\n")
 #     console.print("Select your exported bookmarks plist file", style="blue")
@@ -150,6 +161,7 @@ menuOptions = [
     ("Copy bookmarks to desktop", copy_bookmarks_to_desktop),
     # ("Import bookmarks to Xcode", import_bookmarks_to_xcode),
     ("Copy breakpoints to desktop", copy_breakpoints_to_desktop),
+    ("List branches, commits, and last commit date", list_branches_commits_dates),
     ("Run Xcode build",         run_xcode_build),
     ("Quit",                    exit)
 ]
