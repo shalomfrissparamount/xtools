@@ -93,6 +93,7 @@ def list_branches_commits_dates():
     else:
         print(output.decode())
     console.print("\n")
+
 # def import_bookmarks_to_xcode():
 #     console.print("\n")
 #     console.print("Select your exported bookmarks plist file", style="blue")
@@ -108,8 +109,6 @@ def list_branches_commits_dates():
 #     console.print("Make sure Xcode loads bookmarks in the ide", style="blue")
 #     subprocess.run(['open', '-a', '/Applications/Xcode.app'], check=True)
 #     console.print("\n")
-   
-
 
 def copy_breakpoints_to_desktop():
     console.print("\n")
@@ -118,6 +117,21 @@ def copy_breakpoints_to_desktop():
     subprocess.run(['cp', f"CBS.xcworkspace/xcuserdata/{output}.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist", f"/Users/{output}/Desktop/breakpoints_{datetime.now().strftime('%Y_%m_%d-%I_%M_%S_%p')}.xcbkptlist"], check=True)
     console.print("\n")
 
+def create_test_build():
+    console.print("\n")
+    current_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], encoding='utf-8').strip()
+    console.print("Do you want to push to 'pplus' or 'pplustv'? Enter 'pplus' or 'pplustv': ", style="blue")
+    branch_target = input().strip()
+    if branch_target not in ['pplus', 'pplustv']:
+        console.print("Invalid input. Please enter 'pplus' or 'pplustv'.", style="bold red")
+    else:
+        branch_target = f"build/firenation/{branch_target}"
+        console.print(f"Pushing to {branch_target}...", style="blue")
+        try:
+            subprocess.run(['git', 'push', '--force', 'origin', f"{current_branch}:{branch_target}"], check=True)
+            console.print(f"Successfully pushed {current_branch} to {branch_target}.", style="bold green")
+        except subprocess.CalledProcessError as e:
+            console.print(f"Failed to push {current_branch} to {branch_target}. Error: {str(e)}", style="bold red")
 
 ##########################################################
 # Proxy
@@ -150,20 +164,21 @@ def menu():
 # Properties
 ##########################################################
 menuOptions = [
-    ("Fix my Xcode",            fix_xcode), 
-    ("Delete DerivedData",      delete_derived_data),
-    ("List proxy settings",     list_proxy_settings),
-    ("Reset package caches",    reset_package_caches),
-    ("List devices",            list_devices),
-    ("List all device info",    list_all_device_info),
-    ("List all booted devices", list_all_booted_devices),
-    ("List packages/targets/schemes/build configs",            list_schemes),
-    ("Copy bookmarks to desktop", copy_bookmarks_to_desktop),
+    ("Fix my Xcode",                            fix_xcode), 
+    ("Delete DerivedData",                      delete_derived_data),
+    ("List proxy settings",                     list_proxy_settings),
+    ("Reset package caches",                    reset_package_caches),
+    ("List devices",                            list_devices),
+    ("List all device info",                    list_all_device_info),
+    ("List all booted devices",                 list_all_booted_devices),
+    ("List packages/targets/schemes/build configs", list_schemes),
+    ("Copy bookmarks to desktop",               copy_bookmarks_to_desktop),
     # ("Import bookmarks to Xcode", import_bookmarks_to_xcode),
-    ("Copy breakpoints to desktop", copy_breakpoints_to_desktop),
+    ("Copy breakpoints to desktop",             copy_breakpoints_to_desktop),
     ("List branches, commits, and last commit date", list_branches_commits_dates),
-    ("Run Xcode build",         run_xcode_build),
-    ("Quit",                    exit)
+    ("Run Xcode build",                         run_xcode_build),
+    ("Create test build from current branch",   create_test_build),
+    ("Quit",                                    exit)
 ]
 
 ##########################################################
