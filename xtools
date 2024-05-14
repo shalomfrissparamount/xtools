@@ -119,6 +119,11 @@ def copy_breakpoints_to_desktop():
 
 def create_test_build():
     console.print("\n")
+    try:
+        subprocess.run(['git', 'rev-parse', '--is-inside-work-tree'], check=True)
+    except subprocess.CalledProcessError:
+        console.print("You are not inside a git repository. Exiting...", style="bold red")
+        return
     current_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], encoding='utf-8').strip()
     console.print("Do you want to push to 'pplus' or 'pplustv'? Enter 'pplus' or 'pplustv': ", style="blue")
     branch_target = input().strip()
