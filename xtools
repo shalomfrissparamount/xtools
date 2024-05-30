@@ -125,9 +125,9 @@ def create_test_build():
         console.print("You are not inside a git repository. Exiting...", style="bold red")
         return
     current_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], encoding='utf-8').strip()
-    console.print("Do you want to push to 'pplus', 'pplustv', 'pplusINTL' or 'pplustvINTL'? Enter 'pplus', 'pplustv', 'pplusINTL' or 'pplustvINTL': ", style="blue")
+    console.print("Do you want to push to 'pplus', 'pplustv', 'pplusintl' or 'pplustvintl'? Enter 'pplus', 'pplustv', 'pplusintl' or 'pplustvintl': ", style="blue")
     branch_target = input().strip()
-    if branch_target not in ['pplus', 'pplustv', 'pplusINTL', 'pplustvINTL']:
+    if branch_target not in ['pplus', 'pplustv', 'pplusintl', 'pplustvintl']:
         console.print("Invalid input. Please enter 'pplus' or 'pplustv'.", style="bold red")
     else:
         branch_target = f"build/firenation/{branch_target}"
